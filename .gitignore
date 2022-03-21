@@ -1,0 +1,5 @@
+.vscode
+*.out
+*.w2c.c
+*.w2c.h
+*.o

@@ -1,0 +1,1 @@
+Example usage of sandboxing via wasm2c
