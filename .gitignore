@@ -1,5 +1,11 @@
 .vscode
-*.out
+
+# Generated build artifacts
+*.wasm
 *.w2c.c
 *.w2c.h
 *.o
+add-sub
+
+# Downloaded tools
+tools/

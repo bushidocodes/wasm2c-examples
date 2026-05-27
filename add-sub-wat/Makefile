@@ -1,20 +1,35 @@
+# Tool paths — override these if your tools are installed elsewhere.
+# WASM_CLANG: a clang that can target wasm32 (standard LLVM release)
+# CC:         the native C compiler for the final binary
+# WASM2C:     wasm2c from the wabt toolkit
+# WAT2WASM:   wat2wasm from the wabt toolkit
+WABT_DIR  ?= ../tools/wabt-1.0.41
+WASM_CLANG ?= clang
+CC         ?= clang
+WASM2C     ?= "$(WABT_DIR)/bin/wasm2c"
+WAT2WASM   ?= "$(WABT_DIR)/bin/wat2wasm"
+
+RUNTIME_SRCS = ../common/wasm-rt-impl.c ../common/wasm-rt-mem-impl.c
+CFLAGS       = -I../common
+
+.PHONY: all clean
+
+all: add-sub
+
 %.wasm: %.wat
-	wat2wasm $< -o $@
+	$(WAT2WASM) $< -o $@
 
 %.w2c.c: %.wasm
-	 wasm2c $< -o $@
+	$(WASM2C) $< --module-name $(basename $<) -o $@
 
 add.o: add.w2c.c
-	clang -DWASM_RT_MODULE_PREFIX=add_ -c $^ -o $@
+	$(CC) $(CFLAGS) -c $^ -o $@
 
 sub.o: sub.w2c.c
-	clang -DWASM_RT_MODULE_PREFIX=sub_ -c $^ -o $@
+	$(CC) $(CFLAGS) -c $^ -o $@
 
-a.out: ../common/wasm-rt-impl.c main.c add.o sub.o
-	clang -I../common $^ -o $@
+add-sub: main.c add.o sub.o
+	$(CC) $(CFLAGS) $^ $(RUNTIME_SRCS) -o $@
 
 clean:
-	rm -f *.w2c.c
-	rm -f *.w2c.h
-	rm -f *.o
-	rm -f a.out
+	rm -f *.wasm *.w2c.c *.w2c.h *.o add-sub
