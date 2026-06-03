@@ -1,5 +1,6 @@
+#include <stdint.h>
 
-extern int sub(int a, int b) __attribute__((export_name("sub")))
+uint32_t sub(uint32_t a, uint32_t b) __attribute__((export_name("sub")))
 {
     return a - b;
 }
