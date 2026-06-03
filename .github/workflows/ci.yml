@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LLVM (with wasm32 target)
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 18
+          sudo apt-get install -y lld-18
+
+      - name: Download wabt
+        run: |
+          mkdir -p tools
+          curl -L https://github.com/WebAssembly/wabt/releases/download/1.0.41/wabt-1.0.41-linux-x64.tar.gz \
+            | tar -xz -C tools/
+
+      - name: Test add-sub-c
+        run: |
+          cd add-sub-c
+          make test WASM_CLANG=clang-18 CC=clang-18 WABT_DIR=../tools/wabt-1.0.41
+
+      - name: Test add-sub-wat
+        run: |
+          cd add-sub-wat
+          make test CC=clang-18 WABT_DIR=../tools/wabt-1.0.41
