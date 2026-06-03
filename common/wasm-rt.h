@@ -206,7 +206,7 @@ extern "C" {
  * Wasm2c to use segment registers to speedup access to the linear heap. Note
  * that even if allowed in this way, the segment registers would only be used if
  * Wasm2c output is compiled for a suitable architecture and OS and the produces
- * C file is compiled by supported compilers. The extact restrictions are listed
+ * C file is compiled by supported compilers. The exact restrictions are listed
  * in detail in src/template/wasm2c.declarations.c
  */
 #ifndef WASM_RT_ALLOW_SEGUE
