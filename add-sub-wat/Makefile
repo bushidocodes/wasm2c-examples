@@ -9,12 +9,13 @@ CC         ?= clang
 WASM2C     ?= "$(WABT_DIR)/bin/wasm2c"
 WAT2WASM   ?= "$(WABT_DIR)/bin/wat2wasm"
 
+UNITY_DIR    = ../common/unity
 RUNTIME_SRCS = ../common/wasm-rt-impl.c ../common/wasm-rt-mem-impl.c
-CFLAGS       = -I../common
+CFLAGS       = -I../common -I$(UNITY_DIR)
 
-.PHONY: all clean
+.PHONY: all test clean
 
-all: add-sub
+all: test_add_sub
 
 %.wasm: %.wat
 	$(WAT2WASM) $< -o $@
@@ -28,8 +29,11 @@ add.o: add.w2c.c
 sub.o: sub.w2c.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
-add-sub: main.c add.o sub.o
-	$(CC) $(CFLAGS) $^ $(RUNTIME_SRCS) -o $@
+test_add_sub: test_add_sub.c add.o sub.o
+	$(CC) $(CFLAGS) $^ $(RUNTIME_SRCS) $(UNITY_DIR)/unity.c -o $@
+
+test: test_add_sub
+	./test_add_sub
 
 clean:
-	rm -f *.wasm *.w2c.c *.w2c.h *.o add-sub
+	rm -f *.wasm *.w2c.c *.w2c.h *.o test_add_sub
