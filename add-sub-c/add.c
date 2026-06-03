@@ -1,5 +1,6 @@
+#include <stdint.h>
 
-extern int add(int a, int b) __attribute__((export_name("add")))
+uint32_t add(uint32_t a, uint32_t b) __attribute__((export_name("add")))
 {
     return a + b;
 }
