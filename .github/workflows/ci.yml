@@ -13,8 +13,14 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Install LLVM (with wasm32 target)
+        env:
+          # SHA-256 of https://apt.llvm.org/llvm.sh, pinned to detect tampering
+          # or a compromised upstream. Update this when intentionally bumping the
+          # installer (verify the new value out-of-band before committing it).
+          LLVM_SH_SHA256: dd5978eafdd69ff7f95793b35f633beca37fe50d84101a9a4add2bf93512c511
         run: |
           wget https://apt.llvm.org/llvm.sh
+          echo "${LLVM_SH_SHA256}  llvm.sh" | sha256sum --check --strict
           chmod +x llvm.sh
           sudo ./llvm.sh 18
           sudo apt-get install -y lld-18
