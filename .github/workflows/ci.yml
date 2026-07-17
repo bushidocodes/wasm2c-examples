@@ -18,9 +18,8 @@ jobs:
       - name: Install LLVM (with wasm32 target)
         env:
           # SHA-256 of https://apt.llvm.org/llvm.sh, pinned to detect tampering
-          # or a compromised upstream. Update this when intentionally bumping the
-          # installer (verify the new value out-of-band before committing it).
-          LLVM_SH_SHA256: dd5978eafdd69ff7f95793b35f633beca37fe50d84101a9a4add2bf93512c511
+          # or a compromised upstream. Update this when apt.llvm.org/llvm.sh changes (re-download, sha256sum, verify out-of-band before committing).
+          LLVM_SH_SHA256: 9474ecd78b52aba6e923976b1e9773f5613027cc7e237b9956986cb536e02a36
         run: |
           wget https://apt.llvm.org/llvm.sh
           echo "${LLVM_SH_SHA256}  llvm.sh" | sha256sum --check --strict
